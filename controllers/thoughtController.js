@@ -1,27 +1,27 @@
-const { ObjectId } = require('mongoose').Types;
-const { Thought: Thought, User: User } = require('../models');
+// const { ObjectId } = require('mongoose').Types;
+const { Thought, User } = require('../models');
 
-// Aggregate function to get the number of students overall
-const headCount = async () =>
-  Thought.aggregate()
-    .count('thoughtCount')
-    .then((numberOfThoughts) => numberOfThoughts);
+// // Aggregate function to get the number of students overall
+// const headCount = async () =>
+//   Thought.aggregate()
+//     .count('thoughtCount')
+//     .then((numberOfThoughts) => numberOfThoughts);
 
-// Aggregate function for getting the overall grade using $avg
-const grade = async (thoughtId) =>
-  Thought.aggregate([
-    // only include the given student by using $match
-    { $match: { _id: ObjectId(thoughtId) } },
-    {
-      $unwind: '$reactions',
-    },
-    {
-      $group: {
-        _id: ObjectId(thoughtId),
-        overallGrade: { $avg: '$reactions.score' },
-      },
-    },
-  ]);
+// // Aggregate function for getting the overall grade using $avg
+// const grade = async (thoughtId) =>
+//   Thought.aggregate([
+//     // only include the given student by using $match
+//     { $match: { _id: ObjectId(thoughtId) } },
+//     {
+//       $unwind: '$reactions',
+//     },
+//     {
+//       $group: {
+//         _id: ObjectId(thoughtId),
+//         overallGrade: { $avg: '$reactions.score' },
+//       },
+//     },
+//   ]);
 
 module.exports = {
   // Get all thoughts
@@ -30,7 +30,6 @@ module.exports = {
       .then(async (thoughts) => {
         const thoughtObj = {
           thoughts,
-          headCount: await headCount(),
         };
         return res.json(thoughtObj);
       })
@@ -39,6 +38,7 @@ module.exports = {
         return res.status(500).json(err);
       });
   },
+
   // Get a single thought
   getSingleThought(req, res) {
     Thought.findOne({ _id: req.params.thoughtId })
@@ -56,12 +56,29 @@ module.exports = {
         return res.status(500).json(err);
       });
   },
-  // create a new thought
+
+  // create a new thought come back to this 
   createThought(req, res) {
     Thought.create(req.body)
       .then((thought) => res.json(thought))
       .catch((err) => res.status(500).json(err));
   },
+
+  // update a thought a new thought
+  updateThought(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $set: req.body },
+      { runValidators: true, new: true }
+    )
+      .then((thought) =>
+        !thought
+          ? res.status(404).json({ message: 'No thought with this id!' })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+
   // Delete a thought and remove them from the user
   deleteThought(req, res) {
     Thought.findOneAndRemove({ _id: req.params.thoughtId })
@@ -93,7 +110,7 @@ module.exports = {
     console.log(req.body);
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
-      { $addToSet: { assignments: req.body } },
+      { $addToSet: { reactions: req.body } },
       { runValidators: true, new: true }
     )
       .then((thought) =>
@@ -105,11 +122,12 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
-  // Remove reaction from a thought
+
+  // Remove reaction from a thought come back to this
   removeReaction(req, res) {
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
-      { $pull: { reaction: { reactionId: req.params.reactionId } } },
+      { $pull: { reactions: { reactionId: req.params.reactionId } } },
       { runValidators: true, new: true }
     )
       .then((thought) =>

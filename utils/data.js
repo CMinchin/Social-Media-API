@@ -74,26 +74,43 @@ const names = [
   'Parker',
 ];
 
-const appDescriptions = [
-  'Decision Tracker',
-  'Find My Phone',
-  'Learn Piano',
-  'Starbase Defender',
-  'Tower Defense',
+const Thoughts = [
+  'Original thought',
+  'the bird is freed',
+  'Trash me all day, but it’ll cost $8',
+  '⚡️⚡️⚡️ Power to the People ⚡️⚡️⚡️',
+  'Full-scale Hyperloop Testing has begun',
   'Monopoly Money Manager',
-  'Movie trailers',
+  'Tiny talk is talk so small it feels like it’s coming from your own mind',
   'Hello world',
   'Stupid Social Media App',
-  'Notes',
-  'Messages',
-  'Email',
-  'Compass',
-  'Firefox',
-  'Running app',
-  'Cooking app',
-  'Poker',
-  'Deliveries',
+  'A neuron doesn’t realize it’s a neuron',
+  'Because it consists of billions of bidirectional interactions per day, Twitter can be thought of as a collective, cybernetic super-intelligence',
+  'The entitled elite is not mad that they have to pay $8/month. They’re mad that anyone can pay $8/month.',
+  'Being attacked by both right & left simultaneously is a good sign',
+  'Twitter speaks to the inner masochist in all of us',
+  'To all complainers, please continue complaining, but it will cost $8',
+  'If I had a dollar for every time someone asked me if Trump is coming back on this platform, Twitter would be minting money!',
+  'Sonic BOOMS!!',
+  'Halloween with my Mom',
 ];
+
+const reactions = [
+  "Wow that was amazing",
+  "I don't agree with that",
+  "what a great point",
+  "cringe",
+  "I disagree but respect your right to an opinion",
+  "ratio",
+  "I'm feeling generous will double any crypto currency you send to me"
+]
+
+const emails = [
+  "gmail.com",
+  "hotmail.com",
+  "iinet.net.au",
+  "icloud.com"
+]
 
 // Get a random item given an array
 const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -102,17 +119,5 @@ const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const getRandomName = () =>
   `${getRandomArrItem(names)} ${getRandomArrItem(names)}`;
 
-// Function to generate random assignments that we can add to student object.
-const getRandomReaction = (int) => {
-  const results = [];
-  for (let i = 0; i < int; i++) {
-    results.push({
-      reactionName: getRandomArrItem(appDescriptions),
-      score: Math.floor(Math.random() * (99 - 70 + 1) + 70),
-    });
-  }
-  return results;
-};
-
 // Export the functions for use in seed.js
-module.exports = { getRandomName, getRandomReaction };
+module.exports = { getRandomName, getRandomArrItem, Thoughts, reactions, emails};

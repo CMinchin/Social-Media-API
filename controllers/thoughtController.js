@@ -47,8 +47,7 @@ module.exports = {
         !thought
           ? res.status(404).json({ message: 'No thought with that ID' })
           : res.json({
-            thought,
-            grade: await grade(req.params.thoughtId),
+            thought
           })
       )
       .catch((err) => {
